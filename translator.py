@@ -21,7 +21,10 @@ def translate_article(text, lang):
     ]
 
     response = client.invoke(messages)
-    return response.content
+    if response is None:
+        print("Erro ao traduzir o texto. Verifique as configurações da API ou o endpoint.")
+        return None
+    return response
 
 def salvar_como_markdown(texto, nome_arquivo="artigo_traduzido.md"):
     """Salva o texto traduzido em um arquivo Markdown."""

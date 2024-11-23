@@ -10,10 +10,36 @@ class AzureChatOpenAI:
         self.max_retries = max_retries
 
     def invoke(self, messages):
-        # Implementação da API de chamada
-        pass
+        """Envia mensagens para o endpoint do Azure OpenAI e retorna a resposta."""
+        # URL para o endpoint específico do deployment
+        #url = f"{self.azure_endpoint}/openai/deployments/{self.deployment_name}/chat/completions?api-version={self.api_version}"
+        url = f"{self.azure_endpoint.rstrip('/')}/openai/deployments/{self.deployment_name}/chat/completions?api-version={self.api_version}"
+
+        
+        # Cabeçalhos da requisição
+        headers = {
+            "Content-Type": "application/json",
+            "api-key": self.api_key,
+        }
+        
+        # Corpo da requisição
+        payload = {
+            "messages": [{"role": role, "content": content} for role, content in messages],
+            "max_tokens": 1000,
+            "temperature": 0.7,
+        }
+        
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response.raise_for_status()  # Levanta exceção se o status for 4xx ou 5xx
+            data = response.json()
+            return data["choices"][0]["message"]["content"]
+        except requests.exceptions.RequestException as e:
+            print(f"Erro ao chamar a API do Azure OpenAI: {e}")
+            return None
 
 def extrair_texto_url(url):
+    """Extrai texto limpo de uma URL."""
     response = requests.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
