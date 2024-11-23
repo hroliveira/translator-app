@@ -13,7 +13,7 @@ Este projeto é um script Python para extrair texto de uma URL e traduzi-lo usan
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seuusuario/translator.git
+   git clone https://github.com/hroliveira/translator-app.git
    cd translator
    ```
 
